@@ -8,17 +8,60 @@ use App\Models\Student;
 class StudentController extends Controller
 {
     public function index() {
-        $students = (new Student())->getStudents();
 
-        $data = [
-            'message' => 'List Semua Siswa',
-            'data' => $students
-        ];
+        $statuscode = 200;
+        $students = Student::all();
 
-        return response()->json($data,200);
+        if ($student->isEmpty()){
+            $data = [
+                'message' => 'Resource is Empty',
+                'data'=>'null'
+            ];
+
+            return respone()->json(204);
+
+        } else {
+            $data = [
+                'message' => 'List Semua Siswa',
+                'data' => $students
+            ];
+
+            $statuscode = 200;
+        }
+
+        return response()->json($data,$statusCode);
+    }
+
+    public function show(string $id)
+    {
+        $statusCode = 200;
+        $student = Student::find($id);
+
+        if ($student) {
+            $data = [
+                'message' => 'Student Found',
+                'data' => $student
+            ];
+        } else {
+            $data = [
+                'message' => 'Student Not Found',
+                'data' => null
+            ];
+
+            $statusCode = 404;
+        }
+
+        return response()->json($data, $statusCode);
     }
 
     public function store(Request $request) {
+        
+        $request->validate([
+            "nama"=>"required",
+            "nim"=>"required",
+            "emial"=>"required|email",
+            "jurusan"=>"required"
+        ],$message);
 
         $input = [
             'nama' => $request->nama,
@@ -38,21 +81,30 @@ class StudentController extends Controller
     }
 
     public function update(Request $request, string $id) {
-
-        $input = [
-            'nama' => $request->nama,
-            'nim' => $request->nim,
-            'email' => $request->email,
-            'jurusan' => $request->jurusan
-        ];
-
+        
+        $statusCode = 200;
         $student = Student::find($id);
-        $student->update($input);
+        
+        if ($student){
+            $input -> update([
+                'nama' => $request->nama ?? $student->nama,
+                'nim' => $request->nim ?? $student->nim,
+                'email' => $request->email ?? $student->email,
+                'jurusan' => $request->jurusan ?? $student->jurusan
+            ]);
+            
+            $student->update($input);
 
-        $data = [
-            'message' => 'Pembaruan data Siswa',
-            'data' => $student
-        ];
+            $data = [
+                'message' => 'Pembaruan data Siswa Berhasil',
+                'data' => $student
+            ];
+        } else {
+            $data = [
+                'message' => 'Siswa tidak ditemukan',
+                'data' => null
+            ];
+        }
 
         return response()->json($data, 200);
 
@@ -63,9 +115,17 @@ class StudentController extends Controller
         $student = Student::find($id);
         $student->delete();
 
+    if ($student){
         $data = [
             'message' => 'ID: '. $id . ' Berhasil Menghapus',
         ];
+    } else {
+        $data = [
+            'message' => 'Siswa tidak ditemukan',
+        ];
+
+        $statusCode = 404;
+    }
 
         return response()->json($data, 200);
 
