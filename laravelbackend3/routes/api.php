@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnimalController;
 use App\Http\COntrollers\StudentController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,13 +60,18 @@ Route::get('/animals/{id}',[AnimalController::class, 'destroy']);
 Route::get('/students',[StudentController::class,'index']);
 
 // method post
-Route::post('/students',[StudentController::class,'store']);
+Route::post('/students',[StudentController::class,'store'])->middleware('auth:sanctum');
 
 //method put
-Route::put('/students/{id}',[StudentController::class,'update']);
+Route::put('/students/{id}',[StudentController::class,'update'])->middleware('auth:sanctum');
 
 // method delete
-Route::delete('/students/{id}',[StudentController::class,'destroy']);
+Route::delete('/students/{id}',[StudentController::class,'destroy'])->middleware('auth:sanctum');
 
 //method show
 Route::get('/students/{id}',[StudentController::class,'show']);
+
+//auth
+Route::post('/register',[AuthController::class,'register']);
+
+Route::post('/login',[AuthController::class,'login']);

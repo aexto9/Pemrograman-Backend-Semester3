@@ -12,7 +12,7 @@ class StudentController extends Controller
         $statuscode = 200;
         $students = Student::all();
 
-        if ($student->isEmpty()){
+        if ($students->isEmpty()){
             $data = [
                 'message' => 'Resource is Empty',
                 'data'=>'null'
@@ -29,7 +29,7 @@ class StudentController extends Controller
             $statuscode = 200;
         }
 
-        return response()->json($data,$statusCode);
+        return response()->json($data,$statuscode);
     }
 
     public function show(string $id)
@@ -56,6 +56,14 @@ class StudentController extends Controller
 
     public function store(Request $request) {
         
+        $validateData = $request->validate([
+            //kolom => 'rules|rules'
+            'nama' => 'required',
+            'nim' => 'numeric|required',
+            'email' => 'email|required',
+            'jurusan' => 'required'
+        ]);
+        
         $request->validate([
             "nama"=>"required",
             "nim"=>"required",
@@ -70,10 +78,10 @@ class StudentController extends Controller
             'jurusan' => $request->jurusan
         ];
 
-        $student = Student::create($input);
+        $student = Student::create($validateData);
 
         $data = [
-            'message' => 'Siswa Terdaftar',
+            'message' => 'Siswa telah berhasil Terdaftar',
             'data' => $student
         ];
 
