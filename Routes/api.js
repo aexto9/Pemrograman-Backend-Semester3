@@ -1,29 +1,22 @@
-//Import Student Controller
-const StudentController = require("../controller/StudentController")
+// Import StudentController
+const StudentController = require("../controllers/StudentController");
 
 // Import express
 const express = require("express");
 
-//membuat object router
+// Membuat object router
 const router = express.Router();
 
-/**
- * membuat routing
- * Method get menerima 2 params
- * Param 1 adalah endpoint
- * Param 2 Callback
- * Callback menerima object req dan res
- */
-
 router.get("/", (req, res) => {
-    res.send("Hello Express!");
+    res.send("Hello World!");
 });
 
-//Routing Students
+// Routing Students
 router.get("/students", StudentController.index);
 router.post("/students", StudentController.store);
-router.put("/students", StudentController.update);
-router.delete("/students", StudentController.destroy);
+router.put("/students/:id", StudentController.update);
+router.delete("/students/:id", StudentController.destroy);
+router.get("/students/:id", StudentController.show);
 
-// Export Router
+// Export router
 module.exports = router;
